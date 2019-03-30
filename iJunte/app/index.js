@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const users = require('./controllers/userController');
+const products = require('./controllers/productController');
 
 const app = express();
 
@@ -18,6 +19,7 @@ mongoose.connect('mongodb://localhost:27017/userdb', { useNewUrlParser: true })
 	.catch(err => console.log(`Could not connect to DataBase: ${err}`));
 
 // routing
+app.use('/api/products', products);
 app.use('/api/users', users);
 
 // port
