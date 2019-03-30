@@ -1,26 +1,25 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
-
 const productSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
-		trim: true ,
+		trim: true,
 		minlength: 4,
 		maxlength: 80,
 	},
-	type: {
+	category: {
 		type: String,
 		required: true,
-		trim: true ,
+		trim: true,
 		minlength: 4,
 		maxlength: 80,
 	},
 	description: {
 		type: String,
 		required: true,
-		trim: true ,
+		trim: true,
 		minlength: 4,
 		maxlength: 200,
 	},
@@ -28,17 +27,26 @@ const productSchema = new mongoose.Schema({
 		type: Number,
 		required: true,
 		min: 0,
-		max:255,
+		max: 255,
 	},
 	cost: {
 		type: Number,
-		required: false,
+		min: 0,
+		max: 255,
 	},
 	picture: {
-		type: Buffer,
-		required: false,
-		min: 0,
-		max:255, 
+		title: {
+			String,
+			required: true,
+			trim: true,
+			minlength: 4,
+			maxlength: 200,
+		},
+		body: {
+			type: Buffer,
+			required: false,
+			min: 0,
+		},
 	}
 });
 
@@ -72,18 +80,18 @@ async function getProductByPrice(price) {
 	try {
 		const result = await Product
 			.find({ price: price })
-			.select({price: 1});
+			.select({ price: 1 });
 		return result;
 	} catch (error) {
 		throw error;
 	}
 }
 // this function gets product by productName R
-async function getProductByProductName(productName) {
+async function getProductByName(productName) {
 	try {
 		const result = await Product
 			.find({ productName: productName })
-			.select({productName: 1});
+			.select({ productName: 1 });
 		return result;
 	} catch (error) {
 		throw error;
@@ -110,35 +118,29 @@ async function updateProduct(newProduct) {
 async function deleteProduct(id) {
 	try {
 		const deleted = await Product.deleteOne({ _id: id });
+		return deleted;
 	} catch (error) {
 		console.log(error);
 	}
-	return deleted;
 }
-
-
 // validator V
 const validate = (body) => {
 	const schema = {
 		id: Joi.string(),
-		name: Joi.string().min(4).max(80).required().error(new Error('The name must be at least 3 characters.')),
-		productName: Joi.string()
-			.min(4)
-			.required()
-			.error(new Error('The productName must be at least 4 characters')),
-		price: Joi.string()
-			.price()
-			.error(new Error('Invalid price.')),
-		psw: Joi.string()
-			.regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
-			.required()
-			.error(new Error('The psw must contain: Uppercase, Lowercase, and at least one number.')),
-		pswRepeat: Joi.string(),
+		name: Joi.string().trim().min(4).max(80).required().error(new Error('The name must be at least 3 characters.')),
+		category: Joi.string().trim().min(4).max(80).required().error(new Error('The category must be at least 4 characters')),
+		description: Joi.string().trim().min(4).max(200).required().error(new Error('The category must be at least 4 characters')),
+		price: Joi.number().min(0).max(255).required().error(new Error('Invalid price.')),
+		cost: Joi.number().min(0).max(255).error(new Error('Invalid cost.')),
+		picture: Joi.object().keys({
+			title: Joi.string().required().trim().min(4).max(200),
+			body: Joi.binary()
+		})
 	};
 	return Joi.validate(body, schema);
 };
 
 
 module.exports = {
-	createProduct, getProductById, updateProduct, deleteProduct, validate, getProductByPrice, getProductByProductName 
+	createProduct, getProductById, updateProduct, deleteProduct, validate, getProductByPrice, getProductByName
 };
