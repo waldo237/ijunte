@@ -6,25 +6,29 @@ const productSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
+		trim: true ,
 		minlength: 4,
 		maxlength: 80,
 	},
 	type: {
 		type: String,
 		required: true,
+		trim: true ,
 		minlength: 4,
 		maxlength: 80,
 	},
 	description: {
 		type: String,
 		required: true,
+		trim: true ,
 		minlength: 4,
 		maxlength: 200,
-
 	},
 	price: {
 		type: Number,
 		required: true,
+		min: 0,
+		max:255,
 	},
 	cost: {
 		type: Number,
@@ -33,6 +37,8 @@ const productSchema = new mongoose.Schema({
 	picture: {
 		type: Buffer,
 		required: false,
+		min: 0,
+		max:255, 
 	}
 });
 
@@ -115,7 +121,7 @@ async function deleteProduct(id) {
 const validate = (body) => {
 	const schema = {
 		id: Joi.string(),
-		name: Joi.string().min(3).required().error(new Error('The name must be at least 3 characters.')),
+		name: Joi.string().min(4).max(80).required().error(new Error('The name must be at least 3 characters.')),
 		productName: Joi.string()
 			.min(4)
 			.required()
