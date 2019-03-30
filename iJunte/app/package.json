@@ -1,0 +1,34 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "iJunte",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waldo237/ijunte.git"
+  },
+  "keywords": [
+    "backend",
+    "wiring"
+  ],
+  "author": "Waldo Milanes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/waldo237/ijunte/issues"
+  },
+  "homepage": "https://github.com/waldo237/ijunte#readme",
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "eslint": "^5.15.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "joi": "^14.3.1",
+    "mongoose": "^5.4.20"
+  }
+}
