@@ -1,9 +1,5 @@
 const multer = require('multer');
 const path = require('path');
-const GridFsStorage = require('multer-gridfs-storage');
-const crypto = require('crypto');
-const uri = 'mongodb://localhost:27017/';
-const dbName = 'userdb';
 
 // Set The Storage Engine
 const storage = multer.diskStorage({
@@ -13,7 +9,7 @@ const storage = multer.diskStorage({
 	}
 });
 
-// Init Upload
+// sets the multer middleware with the specified paths
 exports.upload = multer({
 	storage: storage,
 	limits: { fileSize: 1000000 },
@@ -21,28 +17,6 @@ exports.upload = multer({
 		checkFileType(file, cb);
 	}
 });
-
-// const storage = new GridFsStorage({
-// 	url: uri+dbName,
-// 	file: (req, file) => {
-// 		return new Promise((resolve, reject) => {
-// 			crypto.randomBytes(16, (err, buf) => {
-// 				if (err) {
-// 					return reject(err);
-// 				}
-// 				const filename = buf.toString('hex') + path.extname(file.originalname);
-// 				const fileInfo = {
-// 					filename: filename,
-// 					bucketName: 'uploads'
-// 				};
-// 				resolve(fileInfo);
-// 			});
-// 		});
-// 	}
-// });
-// exports.upload = multer({ storage });
-// @route GET /
-// @desc Loads form
 
 // Check File Type
 function checkFileType(file, cb) {

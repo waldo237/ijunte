@@ -39,7 +39,7 @@
   <div class="container">
       <div class="col-md-6 m-auto">
         <h1 class="text-center display-4 my-4" style="font-family:'Karla', sans-serif; font-weight:900">Inventory</h1>
-        <form action="/upload" method="POST" enctype="multipart/form-data" style="  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius: 5px;
+        <form action="/api/images/" method="POST" enctype="multipart/form-data" style="  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius: 5px;
         ">
         <div style="padding: 5px; ">
 
@@ -91,7 +91,7 @@
             <div class="card" style="width: 20rem;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             ">
               <!-- if product.id exists proceed, otherwise give a blank image -->
-              <img src="idimage/<%= product.image %>" alt="product image" class="img-responsive">
+              <img src="/api/images/<%= product.image %>" alt="product image" class="img-responsive">
               <div class="card-body" style="<%=background%>;">
                 <h5 class="card-title">Product: <%= product.name %></h5>
                 <p class="card-text">Description: <%= product.description %></p>
@@ -103,7 +103,7 @@
                 <li class="list-group-item" style="<%=background%>;">Cost: $<%= product.cost.toFixed(2) %></li>
               </ul>
               <div class="card-body" style="<%=background%>;">
-                <form id="formi" method="POST" action="/idimage/<%= product.id %>?_method=DELETE">
+                <form id="formi" method="POST" action="/api/products/<%= product.id %>?_method=DELETE">
                   <p hidden id="id-id"><%=product.id %></p>
                   <p hidden id="image-id"><%=product.image %></p>
                     <button class="btn btn-danger btn-block mt-1" style="padding: 2px">Delete</button>
@@ -129,8 +129,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./runaxios.js"></script>
 </body>
 
 </html>

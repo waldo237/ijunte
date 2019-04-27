@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { updateProduct,  validate, Product } = require('../models/Products/productdb');
-const multer = require('./insertProduct');
 const router = express.Router();
 const mongodb = require('mongodb');
+const axios = require('axios');
 
 
 
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 // edit a specific product U
 router.put('/:id', async(req, res) => {
 	try {
-		const reqProduct = await getProductById(req.params.id);
+		const reqProduct = await Product.find({_id: req.params.id});
 		// validations
 		if (!reqProduct) return res.status(404).send('Product not found');
 		const { error } = validate(req.body);
@@ -35,7 +35,7 @@ router.put('/:id', async(req, res) => {
 			description: req.body.description,
 			price:  parseInt(req.body.price),
 			cost:  parseInt(req.body.cost),
-			picture: req.file.path,
+			image: req.file.id,
 		};
 		res.send(updateProduct(editedProduct));
 	} catch (error) {
@@ -46,13 +46,14 @@ router.put('/:id', async(req, res) => {
 // This function deletes a specific product D
 router.delete('/:id', async (req, res) => {
 	try {
-		const reqProduct = await Product.find({_id: req.params.id});
-		if (!reqProduct) return res.status(404).send('Product not found');
-		const result = await Product.deleteOne({_id: req.params.id});
-		res.send('The Product was deleted!');
+		const reqProduct = await Product.findById({_id: req.params.id});
+		await axios.delete(`http://localhost:3000/api/images/${reqProduct.image}`);
+		await Product.findByIdAndDelete({_id: req.params.id});
+		res.redirect('/');
 	} catch (error) {
 		res.status(500).send(`There was an issue with the server: ${error}`);
 	}
+
 });
 // This function gets products by price R
 router.get('/price/:price', async (req, res) => {
@@ -92,7 +93,6 @@ router.get('/image/:id', async function (req, res) {
 		});
 		
 res.render('index', {sg: 'File Uploaded!', file: _img});
-
 	} catch (error) {
 		console.log(error);
 		res.status(500).send(`There was an issue with the server: ${error}`);
