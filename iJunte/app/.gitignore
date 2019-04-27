@@ -1,3 +1,4 @@
 node_modules/
 #ignore eslint file
 .eslintrc.json
+.vscode
