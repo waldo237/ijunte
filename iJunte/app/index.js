@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const users = require('./controllers/userController');
 const products = require('./controllers/productController');
-const images = require('./controllers/new');
+const images = require('./controllers/imageController');
 const methodOverride = require('method-override');
 
 // middlewares
