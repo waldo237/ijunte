@@ -51,7 +51,7 @@ body {
 
 #contact input[type="text"],
 #contact input[type="email"],
-#contact input[type="password"],
+#contact input[type="number"],
 #contact input[type="url"],
 #contact textarea,
 #contact button[type="submit"] {
@@ -89,7 +89,7 @@ fieldset {
 
 #contact input[type="text"],
 #contact input[type="email"],
-#contact input[type="password"],
+#contact input[type="number"],
 #contact input[type="url"],
 #contact textarea {
   width: 100%;
@@ -101,7 +101,7 @@ fieldset {
 
 #contact input[type="text"]:hover,
 #contact input[type="email"]:hover,
-#contact input[type="password"]:hover,
+#contact input[type="number"]:hover,
 #contact input[type="url"]:hover,
 #contact textarea:hover {
   -webkit-transition: border-color 0.3s ease-in-out;
@@ -163,6 +163,18 @@ fieldset {
   text-align: center;
 }
 
+#inventory{
+  font-family: 'Open Sans', sans-serif;
+  color: rgb(194, 40, 40);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 1;
+  text-shadow: #EDEDED 3px 2px 0;
+  position: relative;
+}
 #contact input:focus,
 #contact textarea:focus {
   outline: 0;

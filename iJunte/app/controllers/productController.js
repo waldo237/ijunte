@@ -1,12 +1,18 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
-const { createProduct, getProductById, updateProduct, deleteProduct, validate, 
-	getProductByPrice, getProductByName } = require('../models/Products/productdb');
+const { updateProduct,  validate, Product } = require('../models/Products/productdb');
+const multer = require('./insertProduct');
 const router = express.Router();
+const mongodb = require('mongodb');
+
+
 
 // This server gets a specific product R
 router.get('/:id', async (req, res) => {
+	const Oid = new mongodb.OjectId(req.params.id);
 	try {
-		const reqProduct = await getProductById(req.params.id);
+		const reqProduct = await Product.find({_id: Oid});
 		if (!reqProduct) return res.status(404).send('Product not found');
 		res.send(reqProduct);
 	} catch (error) {
@@ -24,40 +30,14 @@ router.put('/:id', async(req, res) => {
 		if (error) return res.status(400).send(error.message);
 		const editedProduct = {
 			name: req.body.name,
+			brand: req.body.brand,
 			category: req.body.category,
 			description: req.body.description,
-			price: req.body.price,
-			cost: req.body.cost,
-			picture: {
-				title: req.body.title,
-				body: req.body.body,
-			}
+			price:  parseInt(req.body.price),
+			cost:  parseInt(req.body.cost),
+			picture: req.file.path,
 		};
 		res.send(updateProduct(editedProduct));
-	} catch (error) {
-		res.status(500).send(`There was an issue with the server: ${error}`);
-	}
-});
-
-// post a new product to the database C
-router.post('/', async (req, res) => {
-	const { error } = validate(req.body);
-	if (error) return res.status(400).send(error.message);
-	const product = {
-		name: req.body.name,
-		category: req.body.category,
-		description: req.body.description,
-		price: req.body.price,
-		cost: req.body.cost,
-		picture: {
-			title: req.body.title,
-			body: req.body.body,
-		}
-	};
-	try {
-		const result = await createProduct(product);
-		res.send(result);
-    
 	} catch (error) {
 		res.status(500).send(`There was an issue with the server: ${error}`);
 	}
@@ -66,35 +46,58 @@ router.post('/', async (req, res) => {
 // This function deletes a specific product D
 router.delete('/:id', async (req, res) => {
 	try {
-		const reqProduct = await getProductById(req.params.id);
+		const reqProduct = await Product.find({_id: req.params.id});
 		if (!reqProduct) return res.status(404).send('Product not found');
-		res.send(`Product: ${ await deleteProduct(req.params.id)} was deleted`);
+		const result = await Product.deleteOne({_id: req.params.id});
+		res.send('The Product was deleted!');
 	} catch (error) {
 		res.status(500).send(`There was an issue with the server: ${error}`);
 	}
 });
 // This function gets products by price R
 router.get('/price/:price', async (req, res) => {
-	console.log(req.url);
 	try {
-		const reqProduct = await getProductByPrice(req.params.price);
-		console.log(reqProduct[1]);
-		if (reqProduct[1]!== undefined) return res.status(200).send(false);
-		res.send(true);
+		const reqProduct = await Product.find({price: req.params.price});
+		if (!reqProduct) return res.status(404).send('Product not found');
+		res.send(reqProduct);
 	} catch (error) {
 		res.status(500).send(`There was an issue with the server: ${error}`);
-		console.log(error);
 	}
 });
 // This function gets products by productname R
-router.get('/product/:product', async (req, res) => {
+router.get('/name/:name', async (req, res) => {
 	try {
-		const reqProduct = await getProductByName(req.params.product);
+		const reqProduct = await Product.find({ name: req.params.name });
 		console.log(reqProduct[1]);
-		if (reqProduct[0]) return res.status(200).send(false);
-		res.send(true);
+		if (!reqProduct[0]) return res.status(400).send(`there are not products named: ${req.body.product}`);
+		res.send(reqProduct);
 	} catch (error) {
 		res.status(500).send(`There was an issue with the server: ${error}`);
 	}
 });
+
+
+router.get('/image/:id', async function (req, res) {
+	
+	const product = await Product.find({_id: req.params.id});
+	if (!product) return res.status(404).send('Product not found');
+	console.log(product[0].image);
+	try {
+		const fullPath = path.join(__dirname, product[0].image);
+		const _img = await fs.readFile(fullPath, function read(err, data) {
+			if (err) {
+				throw err;
+			}
+			console.log(data);   
+		});
+		
+res.render('index', {sg: 'File Uploaded!', file: _img});
+
+	} catch (error) {
+		console.log(error);
+		res.status(500).send(`There was an issue with the server: ${error}`);
+	}
+});
+
+
 module.exports = router;

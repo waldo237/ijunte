@@ -9,6 +9,12 @@ const productSchema = new mongoose.Schema({
 		minlength: 4,
 		maxlength: 80,
 	},
+	brand: {
+		type: String,
+		trim: true,
+		minlength: 4,
+		maxlength: 80,
+	},
 	category: {
 		type: String,
 		required: true,
@@ -26,55 +32,15 @@ const productSchema = new mongoose.Schema({
 	price: {
 		type: Number,
 		required: true,
-		min: 0,
-		max: 255,
 	},
 	cost: {
 		type: Number,
-		min: 0,
-		max: 255,
 	},
-	picture: {
-		title: {
-			String,
-			required: true,
-			trim: true,
-			minlength: 4,
-			maxlength: 200,
-		},
-		body: {
-			type: Buffer,
-			required: false,
-			min: 0,
-		},
-	}
+	image: String,
 });
 
 const Product = mongoose.model('Product', productSchema);
 
-// this function creates a product in the database C
-async function createProduct(productObject) {
-	const product = new Product(productObject);
-	try {
-		const result = await product.save();
-		return result;
-	}
-	catch (ex) {
-		console.log(ex);
-	}
-}
-
-// this function gets by id R
-async function getProductById(id) {
-	try {
-		const result = await Product
-			.find({ _id: id })
-			.limit(1);
-		return result;
-	} catch (error) {
-		throw error;
-	}
-}
 // this function gets by price R
 async function getProductByPrice(price) {
 	try {
@@ -86,33 +52,11 @@ async function getProductByPrice(price) {
 		throw error;
 	}
 }
-// this function gets product by productName R
-async function getProductByName(productName) {
-	try {
-		const result = await Product
-			.find({ productName: productName })
-			.select({ productName: 1 });
-		return result;
-	} catch (error) {
-		throw error;
-	}
-}
+
 
 // this function updates a product U
 async function updateProduct(newProduct) {
-	try {
-		const result = await Product.updateOne({ _id: newProduct._id }, {
-			$set: {
-				name: newProduct.name,
-				productName: newProduct.productName,
-				price: newProduct.price,
-				password: newProduct.password,
-			},
-		});
-		return result;
-	} catch (error) {
-		throw error;
-	}
+
 }
 // this function deletes a product D
 async function deleteProduct(id) {
@@ -128,19 +72,16 @@ const validate = (body) => {
 	const schema = {
 		id: Joi.string(),
 		name: Joi.string().trim().min(4).max(80).required().error(new Error('The name must be at least 3 characters.')),
+		brand: Joi.string().trim().min(4).max(80).error(new Error('The name must be at least 3 characters.')),
 		category: Joi.string().trim().min(4).max(80).required().error(new Error('The category must be at least 4 characters')),
-		description: Joi.string().trim().min(4).max(200).required().error(new Error('The category must be at least 4 characters')),
-		price: Joi.number().min(0).max(255).required().error(new Error('Invalid price.')),
-		cost: Joi.number().min(0).max(255).error(new Error('Invalid cost.')),
-		picture: Joi.object().keys({
-			title: Joi.string().required().trim().min(4).max(200),
-			body: Joi.binary()
-		})
+		description: Joi.string().trim().min(4).max(200).required().error(new Error('The description must be at least 4 characters')),
+		price: Joi.number().required().error(new Error('Invalid price.')),
+		cost: Joi.number().error(new Error('Invalid cost.')),
+		image: Joi.string(),
 	};
 	return Joi.validate(body, schema);
 };
 
 
-module.exports = {
-	createProduct, getProductById, updateProduct, deleteProduct, validate, getProductByPrice, getProductByName
+module.exports = { Product, updateProduct, deleteProduct, validate, getProductByPrice,
 };
