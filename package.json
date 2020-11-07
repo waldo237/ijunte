@@ -1,0 +1,24 @@
+{
+  "name": "iJunte",
+  "version": "1.0.0",
+  "description": "This is an interactive community for developers.",
+  "author": "Waldo Milanes",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+    "build": "nuxt build",
+    "start": "cross-env NODE_ENV=production node server/index.js",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "moment": "^2.24.0",
+    "nuxt": "^2.0.0",
+    "vue-clickaway": "^2.2.2"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0",
+    "nodemon": "^1.18.9"
+  }
+}
