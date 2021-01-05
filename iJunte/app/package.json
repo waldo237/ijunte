@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/waldo237/ijunte#readme",
   "devDependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "eslint": "^5.15.3"
   },
   "dependencies": {
